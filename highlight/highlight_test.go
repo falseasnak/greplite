@@ -74,3 +74,13 @@ func TestMultipleMatches(t *testing.T) {
 		t.Errorf("expected 3 highlights, got %d in %q", count, result)
 	}
 }
+
+func TestLineRegexpNoColor(t *testing.T) {
+	// When noColor is true, LineRegexp should return the original line unchanged.
+	h := highlight.New(highlight.Cyan, true)
+	re := regexp.MustCompile(`\d+`)
+	result := h.LineRegexp("error 404 not found", re)
+	if result != "error 404 not found" {
+		t.Errorf("expected plain output when noColor=true, got %q", result)
+	}
+}
