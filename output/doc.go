@@ -8,6 +8,9 @@
 //   - FormatColor: ANSI-colored output with optional keyword highlighting
 //     and line-number prefixes.
 //
+// Formatter is safe for sequential use but is not goroutine-safe; callers
+// that write from multiple goroutines must synchronise access externally.
+//
 // Usage:
 //
 //	f := &output.Formatter{
