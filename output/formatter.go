@@ -82,3 +82,19 @@ func (f *Formatter) writeColor(lineNum int, raw string) error {
 	_, err := fmt.Fprintln(f.Writer, line)
 	return err
 }
+
+// WriteHeader writes a filename header, useful when aggregating results from
+// multiple files. It is a no-op for FormatJSON.
+func (f *Formatter) WriteHeader(filename string) error {
+	if f.Format == FormatJSON {
+		return nil
+	}
+	const colorMagenta = "\033[35m"
+	const colorReset = "\033[0m"
+	if f.Format == FormatColor {
+		_, err := fmt.Fprintf(f.Writer, "%s==> %s <==%s\n", colorMagenta, filename, colorReset)
+		return err
+	}
+	_, err := fmt.Fprintf(f.Writer, "==> %s <==\n", filename)
+	return err
+}
