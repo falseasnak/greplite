@@ -12,6 +12,7 @@ type JSONParser struct{}
 func (p *JSONParser) Format() Format { return FormatJSON }
 
 // Parse attempts to parse a JSON log line.
+// Returns nil if the line is empty, does not start with '{', or is invalid JSON.
 func (p *JSONParser) Parse(line string) *LogEntry {
 	line = strings.TrimSpace(line)
 	if len(line) == 0 || line[0] != '{' {
@@ -25,20 +26,25 @@ func (p *JSONParser) Parse(line string) *LogEntry {
 
 	fields := make(map[string]string, len(raw))
 	for k, v := range raw {
-		switch val := v.(type) {
-		case string:
-			fields[k] = val
-		case nil:
-			fields[k] = ""
-		default:
-			b, _ := json.Marshal(val)
-			fields[k] = string(b)
-		}
+		fields[k] = marshalFieldValue(v)
 	}
 
 	return &LogEntry{
 		Raw:    line,
 		Fields: fields,
 		Format: FormatJSON,
+	}
+}
+
+// marshalFieldValue converts a JSON field value to its string representation.
+func marshalFieldValue(v interface{}) string {
+	switch val := v.(type) {
+	case string:
+		return val
+	case nil:
+		return ""
+	default:
+		b, _ := json.Marshal(val)
+		return string(b)
 	}
 }
