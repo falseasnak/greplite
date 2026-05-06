@@ -79,3 +79,16 @@ func TestWriteColorWithLineNumber(t *testing.T) {
 		t.Errorf("expected line number in color output, got %q", buf.String())
 	}
 }
+
+// TestWritePlainEmptyLine verifies that an empty line is written without error
+// and produces a blank (or whitespace-only) output line.
+func TestWritePlainEmptyLine(t *testing.T) {
+	var buf bytes.Buffer
+	f := &Formatter{Writer: &buf, Format: FormatPlain}
+	if err := f.Write(-1, "", nil); err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.TrimSpace(buf.String()); got != "" {
+		t.Errorf("expected empty output for empty line, got %q", got)
+	}
+}
