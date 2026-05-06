@@ -92,9 +92,19 @@ func (f *Formatter) WriteHeader(filename string) error {
 	const colorMagenta = "\033[35m"
 	const colorReset = "\033[0m"
 	if f.Format == FormatColor {
-		_, err := fmt.Fprintf(f.Writer, "%s==> %s <==%s\n", colorMagenta, filename, colorReset)
+		_, err := fmt.Fprintf(f.Writer, "%s==> %s <===%s\n", colorMagenta, filename, colorReset)
 		return err
 	}
 	_, err := fmt.Fprintf(f.Writer, "==> %s <==\n", filename)
+	return err
+}
+
+// WriteSeparator writes a visual separator between result groups. It is a
+// no-op for FormatJSON. Useful when printing context lines around matches.
+func (f *Formatter) WriteSeparator() error {
+	if f.Format == FormatJSON {
+		return nil
+	}
+	_, err := fmt.Fprintln(f.Writer, "--")
 	return err
 }
