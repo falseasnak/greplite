@@ -13,6 +13,9 @@ var humanLayouts = []string{
 	"2006-01-02",
 }
 
+// acceptedFormats is the human-readable list of formats shown in error messages.
+const acceptedFormats = "RFC3339, 2006-01-02T15:04:05, 2006-01-02 15:04:05, 2006-01-02"
+
 // ParseTime parses a user-supplied timestamp string using a set of
 // human-friendly layouts. It returns an error describing the expected
 // formats when no layout matches.
@@ -23,7 +26,7 @@ func ParseTime(s string) (time.Time, error) {
 		}
 	}
 	return time.Time{}, fmt.Errorf(
-		"cannot parse %q — accepted formats: RFC3339, 2006-01-02T15:04:05, 2006-01-02 15:04:05, 2006-01-02", s,
+		"cannot parse %q — accepted formats: %s", s, acceptedFormats,
 	)
 }
 
